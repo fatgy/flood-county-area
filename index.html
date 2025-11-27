@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Flood App</title>
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+			integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+			crossorigin=""
+		/>
+		<!-- Make sure you put this AFTER Leaflet's CSS -->
+		<script
+			src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+			crossorigin=""
+		></script>
+		<!-- Leaflet-KMZ -->
+		<script
+			src="https://unpkg.com/leaflet-kmz@1.0.9/dist/leaflet-kmz.js"
+			crossorigin=""
+		></script>
+		<style>
+			html,
+			body,
+			.map {
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 600px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="map" class="map"></div>
+		<script>
+			const map = L.map('map');
+			map.setView(
+				new L.LatLng(6.9967883831188225, 100.44953177248243),
+				13
+			);
+
+			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 19,
+				attribution:
+					'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+			}).addTo(map);
+
+			// Instantiate KMZ layer (async)
+			const kmz = L.kmzLayer().addTo(map);
+
+			kmz.on('load', function (e) {
+				control.addOverlay(e.layer, e.name);
+				// e.layer.addTo(map);
+			});
+
+			// Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
+			kmz.load('/doc.kml');
+
+			const control = L.control
+				.layers(null, null, { collapsed: false })
+				.addTo(map);
+		</script>
+	</body>
+</html>
